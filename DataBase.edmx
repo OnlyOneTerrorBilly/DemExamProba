@@ -1,0 +1,529 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище DataBaseModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="EdiniciIzmereniya">
+          <Key>
+            <PropertyRef Name="Id_EdIzm" />
+          </Key>
+          <Property Name="Id_EdIzm" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_EdIzm" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="Id_Material" />
+          </Key>
+          <Property Name="Id_Material" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_Material" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Price_Material" Type="money" Nullable="false" />
+          <Property Name="EdIzm_Material" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Polzovateli">
+          <Key>
+            <PropertyRef Name="Id_Polzovateli" />
+          </Key>
+          <Property Name="Id_Polzovateli" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Roli_Polzovateli" Type="int" Nullable="false" />
+          <Property Name="Blocked" Type="bit" Nullable="false" />
+          <Property Name="Popitki_Vhoda" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id_Product" />
+          </Key>
+          <Property Name="Id_Product" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_Product" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="EdIzm_Product" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Roli">
+          <Key>
+            <PropertyRef Name="Id_Roli" />
+          </Key>
+          <Property Name="Id_Roli" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name_Roli" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Specifikacion">
+          <Key>
+            <PropertyRef Name="Id_Specifikacion" />
+          </Key>
+          <Property Name="Id_Specifikacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Material_Specifikacion" Type="int" Nullable="false" />
+          <Property Name="Product_Specifikacion" Type="int" Nullable="false" />
+          <Property Name="Kolvo" Type="decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="EdIzm_Specifikacion" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Zakaz">
+          <Key>
+            <PropertyRef Name="Id_Zakaz" />
+          </Key>
+          <Property Name="Id_Zakaz" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date_Zakaza" Type="date" Nullable="false" />
+          <Property Name="Zakazchik_Zakaz" Type="int" Nullable="false" />
+          <Property Name="Product_Zakaz" Type="int" Nullable="false" />
+          <Property Name="Kolvo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Zakazchik">
+          <Key>
+            <PropertyRef Name="Id_Zakazchiki" />
+          </Key>
+          <Property Name="Id_Zakazchiki" Type="int" Nullable="false" />
+          <Property Name="Name_Zakazchiki" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Inn" Type="bigint" Nullable="false" />
+          <Property Name="Adres" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Telephone" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Prodavec" Type="bit" Nullable="false" />
+          <Property Name="Pokupatel" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Polzovateli_Roli">
+          <End Role="Roli" Type="Self.Roli" Multiplicity="1" />
+          <End Role="Polzovateli" Type="Self.Polzovateli" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roli">
+              <PropertyRef Name="Id_Roli" />
+            </Principal>
+            <Dependent Role="Polzovateli">
+              <PropertyRef Name="Roli_Polzovateli" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifikacion_EdiniciIzmereniya">
+          <End Role="EdiniciIzmereniya" Type="Self.EdiniciIzmereniya" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EdiniciIzmereniya">
+              <PropertyRef Name="Id_EdIzm" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="EdIzm_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifikacion_Material">
+          <End Role="Material" Type="Self.Material" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Material">
+              <PropertyRef Name="Id_Material" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="Material_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifikacion_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id_Product" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="Product_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zakaz_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Zakaz" Type="Self.Zakaz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id_Product" />
+            </Principal>
+            <Dependent Role="Zakaz">
+              <PropertyRef Name="Product_Zakaz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zakaz_Zakazchik">
+          <End Role="Zakazchik" Type="Self.Zakazchik" Multiplicity="1" />
+          <End Role="Zakaz" Type="Self.Zakaz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zakazchik">
+              <PropertyRef Name="Id_Zakazchiki" />
+            </Principal>
+            <Dependent Role="Zakaz">
+              <PropertyRef Name="Zakazchik_Zakaz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище DataBaseModelContainer">
+          <EntitySet Name="EdiniciIzmereniya" EntityType="Self.EdiniciIzmereniya" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Polzovateli" EntityType="Self.Polzovateli" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roli" EntityType="Self.Roli" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Specifikacion" EntityType="Self.Specifikacion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zakaz" EntityType="Self.Zakaz" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zakazchik" EntityType="Self.Zakazchik" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Polzovateli_Roli" Association="Self.FK_Polzovateli_Roli">
+            <End Role="Roli" EntitySet="Roli" />
+            <End Role="Polzovateli" EntitySet="Polzovateli" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifikacion_EdiniciIzmereniya" Association="Self.FK_Specifikacion_EdiniciIzmereniya">
+            <End Role="EdiniciIzmereniya" EntitySet="EdiniciIzmereniya" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifikacion_Material" Association="Self.FK_Specifikacion_Material">
+            <End Role="Material" EntitySet="Material" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifikacion_Product" Association="Self.FK_Specifikacion_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zakaz_Product" Association="Self.FK_Zakaz_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Zakaz" EntitySet="Zakaz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zakaz_Zakazchik" Association="Self.FK_Zakaz_Zakazchik">
+            <End Role="Zakazchik" EntitySet="Zakazchik" />
+            <End Role="Zakaz" EntitySet="Zakaz" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DataBaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="EdiniciIzmereniya">
+          <Key>
+            <PropertyRef Name="Id_EdIzm" />
+          </Key>
+          <Property Name="Id_EdIzm" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_EdIzm" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Specifikacion" Relationship="Self.FK_Specifikacion_EdiniciIzmereniya" FromRole="EdiniciIzmereniya" ToRole="Specifikacion" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="Id_Material" />
+          </Key>
+          <Property Name="Id_Material" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_Material" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Price_Material" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="EdIzm_Material" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Specifikacion" Relationship="Self.FK_Specifikacion_Material" FromRole="Material" ToRole="Specifikacion" />
+        </EntityType>
+        <EntityType Name="Polzovateli">
+          <Key>
+            <PropertyRef Name="Id_Polzovateli" />
+          </Key>
+          <Property Name="Id_Polzovateli" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Roli_Polzovateli" Type="Int32" Nullable="false" />
+          <Property Name="Blocked" Type="Boolean" Nullable="false" />
+          <Property Name="Popitki_Vhoda" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Roli" Relationship="Self.FK_Polzovateli_Roli" FromRole="Polzovateli" ToRole="Roli" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id_Product" />
+          </Key>
+          <Property Name="Id_Product" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_Product" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EdIzm_Product" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Specifikacion" Relationship="Self.FK_Specifikacion_Product" FromRole="Product" ToRole="Specifikacion" />
+          <NavigationProperty Name="Zakaz" Relationship="Self.FK_Zakaz_Product" FromRole="Product" ToRole="Zakaz" />
+        </EntityType>
+        <EntityType Name="Roli">
+          <Key>
+            <PropertyRef Name="Id_Roli" />
+          </Key>
+          <Property Name="Id_Roli" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name_Roli" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Polzovateli" Relationship="Self.FK_Polzovateli_Roli" FromRole="Roli" ToRole="Polzovateli" />
+        </EntityType>
+        <EntityType Name="Specifikacion">
+          <Key>
+            <PropertyRef Name="Id_Specifikacion" />
+          </Key>
+          <Property Name="Id_Specifikacion" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Material_Specifikacion" Type="Int32" Nullable="false" />
+          <Property Name="Product_Specifikacion" Type="Int32" Nullable="false" />
+          <Property Name="Kolvo" Type="Decimal" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="EdIzm_Specifikacion" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EdiniciIzmereniya" Relationship="Self.FK_Specifikacion_EdiniciIzmereniya" FromRole="Specifikacion" ToRole="EdiniciIzmereniya" />
+          <NavigationProperty Name="Material" Relationship="Self.FK_Specifikacion_Material" FromRole="Specifikacion" ToRole="Material" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_Specifikacion_Product" FromRole="Specifikacion" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Zakaz">
+          <Key>
+            <PropertyRef Name="Id_Zakaz" />
+          </Key>
+          <Property Name="Id_Zakaz" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date_Zakaza" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Zakazchik_Zakaz" Type="Int32" Nullable="false" />
+          <Property Name="Product_Zakaz" Type="Int32" Nullable="false" />
+          <Property Name="Kolvo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Product" Relationship="Self.FK_Zakaz_Product" FromRole="Zakaz" ToRole="Product" />
+          <NavigationProperty Name="Zakazchik" Relationship="Self.FK_Zakaz_Zakazchik" FromRole="Zakaz" ToRole="Zakazchik" />
+        </EntityType>
+        <EntityType Name="Zakazchik">
+          <Key>
+            <PropertyRef Name="Id_Zakazchiki" />
+          </Key>
+          <Property Name="Id_Zakazchiki" Type="Int32" Nullable="false" />
+          <Property Name="Name_Zakazchiki" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Inn" Type="Int64" Nullable="false" />
+          <Property Name="Adres" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Telephone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Prodavec" Type="Boolean" Nullable="false" />
+          <Property Name="Pokupatel" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Zakaz" Relationship="Self.FK_Zakaz_Zakazchik" FromRole="Zakazchik" ToRole="Zakaz" />
+        </EntityType>
+        <Association Name="FK_Specifikacion_EdiniciIzmereniya">
+          <End Role="EdiniciIzmereniya" Type="Self.EdiniciIzmereniya" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EdiniciIzmereniya">
+              <PropertyRef Name="Id_EdIzm" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="EdIzm_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifikacion_Material">
+          <End Role="Material" Type="Self.Material" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Material">
+              <PropertyRef Name="Id_Material" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="Material_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Polzovateli_Roli">
+          <End Role="Roli" Type="Self.Roli" Multiplicity="1" />
+          <End Role="Polzovateli" Type="Self.Polzovateli" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roli">
+              <PropertyRef Name="Id_Roli" />
+            </Principal>
+            <Dependent Role="Polzovateli">
+              <PropertyRef Name="Roli_Polzovateli" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifikacion_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Specifikacion" Type="Self.Specifikacion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id_Product" />
+            </Principal>
+            <Dependent Role="Specifikacion">
+              <PropertyRef Name="Product_Specifikacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zakaz_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Zakaz" Type="Self.Zakaz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="Id_Product" />
+            </Principal>
+            <Dependent Role="Zakaz">
+              <PropertyRef Name="Product_Zakaz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Zakaz_Zakazchik">
+          <End Role="Zakazchik" Type="Self.Zakazchik" Multiplicity="1" />
+          <End Role="Zakaz" Type="Self.Zakaz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zakazchik">
+              <PropertyRef Name="Id_Zakazchiki" />
+            </Principal>
+            <Dependent Role="Zakaz">
+              <PropertyRef Name="Zakazchik_Zakaz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DataBaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="EdiniciIzmereniya" EntityType="Self.EdiniciIzmereniya" />
+          <EntitySet Name="Material" EntityType="Self.Material" />
+          <EntitySet Name="Polzovateli" EntityType="Self.Polzovateli" />
+          <EntitySet Name="Product" EntityType="Self.Product" />
+          <EntitySet Name="Roli" EntityType="Self.Roli" />
+          <EntitySet Name="Specifikacion" EntityType="Self.Specifikacion" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Zakaz" EntityType="Self.Zakaz" />
+          <EntitySet Name="Zakazchik" EntityType="Self.Zakazchik" />
+          <AssociationSet Name="FK_Specifikacion_EdiniciIzmereniya" Association="Self.FK_Specifikacion_EdiniciIzmereniya">
+            <End Role="EdiniciIzmereniya" EntitySet="EdiniciIzmereniya" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifikacion_Material" Association="Self.FK_Specifikacion_Material">
+            <End Role="Material" EntitySet="Material" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Polzovateli_Roli" Association="Self.FK_Polzovateli_Roli">
+            <End Role="Roli" EntitySet="Roli" />
+            <End Role="Polzovateli" EntitySet="Polzovateli" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifikacion_Product" Association="Self.FK_Specifikacion_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Specifikacion" EntitySet="Specifikacion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zakaz_Product" Association="Self.FK_Zakaz_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Zakaz" EntitySet="Zakaz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Zakaz_Zakazchik" Association="Self.FK_Zakaz_Zakazchik">
+            <End Role="Zakazchik" EntitySet="Zakazchik" />
+            <End Role="Zakaz" EntitySet="Zakaz" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище DataBaseModelContainer" CdmEntityContainer="DataBaseEntities">
+          <EntitySetMapping Name="EdiniciIzmereniya">
+            <EntityTypeMapping TypeName="DataBaseModel.EdiniciIzmereniya">
+              <MappingFragment StoreEntitySet="EdiniciIzmereniya">
+                <ScalarProperty Name="Id_EdIzm" ColumnName="Id_EdIzm" />
+                <ScalarProperty Name="Name_EdIzm" ColumnName="Name_EdIzm" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Material">
+            <EntityTypeMapping TypeName="DataBaseModel.Material">
+              <MappingFragment StoreEntitySet="Material">
+                <ScalarProperty Name="Id_Material" ColumnName="Id_Material" />
+                <ScalarProperty Name="Name_Material" ColumnName="Name_Material" />
+                <ScalarProperty Name="Price_Material" ColumnName="Price_Material" />
+                <ScalarProperty Name="EdIzm_Material" ColumnName="EdIzm_Material" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Polzovateli">
+            <EntityTypeMapping TypeName="DataBaseModel.Polzovateli">
+              <MappingFragment StoreEntitySet="Polzovateli">
+                <ScalarProperty Name="Id_Polzovateli" ColumnName="Id_Polzovateli" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Roli_Polzovateli" ColumnName="Roli_Polzovateli" />
+                <ScalarProperty Name="Blocked" ColumnName="Blocked" />
+                <ScalarProperty Name="Popitki_Vhoda" ColumnName="Popitki_Vhoda" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product">
+            <EntityTypeMapping TypeName="DataBaseModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="Id_Product" ColumnName="Id_Product" />
+                <ScalarProperty Name="Name_Product" ColumnName="Name_Product" />
+                <ScalarProperty Name="EdIzm_Product" ColumnName="EdIzm_Product" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roli">
+            <EntityTypeMapping TypeName="DataBaseModel.Roli">
+              <MappingFragment StoreEntitySet="Roli">
+                <ScalarProperty Name="Id_Roli" ColumnName="Id_Roli" />
+                <ScalarProperty Name="Name_Roli" ColumnName="Name_Roli" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Specifikacion">
+            <EntityTypeMapping TypeName="DataBaseModel.Specifikacion">
+              <MappingFragment StoreEntitySet="Specifikacion">
+                <ScalarProperty Name="Id_Specifikacion" ColumnName="Id_Specifikacion" />
+                <ScalarProperty Name="Material_Specifikacion" ColumnName="Material_Specifikacion" />
+                <ScalarProperty Name="Product_Specifikacion" ColumnName="Product_Specifikacion" />
+                <ScalarProperty Name="Kolvo" ColumnName="Kolvo" />
+                <ScalarProperty Name="EdIzm_Specifikacion" ColumnName="EdIzm_Specifikacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="DataBaseModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zakaz">
+            <EntityTypeMapping TypeName="DataBaseModel.Zakaz">
+              <MappingFragment StoreEntitySet="Zakaz">
+                <ScalarProperty Name="Id_Zakaz" ColumnName="Id_Zakaz" />
+                <ScalarProperty Name="Date_Zakaza" ColumnName="Date_Zakaza" />
+                <ScalarProperty Name="Zakazchik_Zakaz" ColumnName="Zakazchik_Zakaz" />
+                <ScalarProperty Name="Product_Zakaz" ColumnName="Product_Zakaz" />
+                <ScalarProperty Name="Kolvo" ColumnName="Kolvo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zakazchik">
+            <EntityTypeMapping TypeName="DataBaseModel.Zakazchik">
+              <MappingFragment StoreEntitySet="Zakazchik">
+                <ScalarProperty Name="Id_Zakazchiki" ColumnName="Id_Zakazchiki" />
+                <ScalarProperty Name="Name_Zakazchiki" ColumnName="Name_Zakazchiki" />
+                <ScalarProperty Name="Inn" ColumnName="Inn" />
+                <ScalarProperty Name="Adres" ColumnName="Adres" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Prodavec" ColumnName="Prodavec" />
+                <ScalarProperty Name="Pokupatel" ColumnName="Pokupatel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
