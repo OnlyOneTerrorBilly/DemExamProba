@@ -181,5 +181,10 @@ namespace DemExam.Pages
             MessageBox.Show("Пользователь разблокирован", "Успех",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        private void BtnNazad_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Navigation());
+        }
     }
 }

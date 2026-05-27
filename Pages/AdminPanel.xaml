@@ -10,7 +10,7 @@
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     </Page.Resources>
-    <Grid Margin="20" Background="Gray">
+    <Grid Background="Gray">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -71,6 +71,8 @@
                                 Margin="5" Click="BtnUpdate_Click"/>
                         <Button x:Name="BtnClear" Content="Очистить" Width="100" 
                                 Margin="5" Click="BtnClear_Click"/>
+                        <Button x:Name="BtnNazad" Content="Назад" Width="100"
+                                Margin="5" Click="BtnNazad_Click"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
