@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +40,8 @@ namespace DemExam.Pages
                 return;
             }
 
-            using (var db = DataBaseEntities.GetContext())
+            // ✅ Правильно: создаем НОВЫЙ контекст каждый раз
+            using (var db = new DataBaseEntities())
             {
                 var user = db.Polzovateli.FirstOrDefault(u => u.Login == login);
 
@@ -48,42 +51,55 @@ namespace DemExam.Pages
                     return;
                 }
 
-                if (user.Blocked == true)
+                if (user.Blocked)
                 {
                     ErrorTextBlock.Text = "Вы заблокированы. Обратитесь к администратору";
                     return;
                 }
 
+                // Проверка пароля
                 if (user.Password == password)
                 {
-                    user.Popitki_Vhoda = 0;
+                    // ✅ Сбрасываем попытки ТОЛЬКО если пользователь НЕ администратор
+                    if (user.Roli_Polzovateli != 1) // 1 = Администратор
+                    {
+                        user.Popitki_Vhoda = 0;
+                    }
                     db.SaveChanges();
 
                     MessageBox.Show("Вы успешно авторизовались", "Успех",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    NavigationService.Navigate(new Navigation());
+                    // Переход в зависимости от роли
+                    if (user.Roli_Polzovateli == 1)
+                        NavigationService.Navigate(new AdminPanel());
+                    else
+                        NavigationService.Navigate(new Navigation());
                 }
                 else
                 {
-                    _localAttemptCount++;
-
-                    int newAttempts = user.Popitki_Vhoda + 1;
-                    user.Popitki_Vhoda = newAttempts;
-
-                    if (newAttempts >= 3 || _localAttemptCount >= 3)
+                    // ✅ Администратора не блокируем даже при ошибке
+                    if (user.Roli_Polzovateli != 1)
                     {
-                        user.Blocked = true;
-                        db.SaveChanges();
-                        ErrorTextBlock.Text = "Вы заблокированы. Обратитесь к администратору";
+                        _localAttemptCount++;
+                        int newAttempts = user.Popitki_Vhoda + 1;
+                        user.Popitki_Vhoda = newAttempts;
+
+                        if (newAttempts >= 3 || _localAttemptCount >= 3)
+                        {
+                            user.Blocked = true;
+                            db.SaveChanges();
+                            ErrorTextBlock.Text = "Вы заблокированы. Обратитесь к администратору";
+                            return;
+                        }
                     }
-                    else
-                    {
-                        db.SaveChanges();
-                        ErrorTextBlock.Text = $"Неверный логин или пароль. Осталось попыток: {3 - newAttempts}";
-                    }
+
+                    db.SaveChanges();
+                    ErrorTextBlock.Text = user.Roli_Polzovateli == 1
+                        ? "Неверный пароль администратора"
+                        : $"Неверный логин или пароль. Осталось попыток: {3 - user.Popitki_Vhoda}";
                 }
-            }
+            } 
         }
     }
 }

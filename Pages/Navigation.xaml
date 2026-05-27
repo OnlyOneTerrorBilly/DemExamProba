@@ -6,9 +6,11 @@
       xmlns:local="clr-namespace:DemExam.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Navigation">
+      Title="Навигация">
 
     <Grid Background="White">
-        
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="Nazad" Content="Назад" Width="200" Height="60" Margin="20 300 0 0" Click="Nazad_Click" FontSize="20"/>
+        </StackPanel>
     </Grid>
 </Page>
