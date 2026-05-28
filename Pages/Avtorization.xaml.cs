@@ -17,13 +17,10 @@ using System.Windows.Shapes;
 
 namespace DemExam.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для Avtorization.xaml
-    /// </summary>
     public partial class Avtorization : Page
     {
-        // Счетчик попыток для текущей сессии (если не хотим хранить в БД до блокировки)
         private int _localAttemptCount = 0;
+
         public Avtorization()
         {
             InitializeComponent();
@@ -34,13 +31,46 @@ namespace DemExam.Pages
             string login = LoginTextBox.Text.Trim();
             string password = PasswordBox.Password;
 
+            // Проверка на пустые поля
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
                 ErrorTextBlock.Text = "Заполните логин и пароль";
                 return;
             }
 
-            // ✅ Правильно: создаем НОВЫЙ контекст каждый раз
+            // ОТДЕЛЬНОЕ ОКНО КАПЧИ
+            var captchaWindow = new Capcha();
+            captchaWindow.Owner = Window.GetWindow(this);
+
+            bool? result = captchaWindow.ShowDialog();
+
+            // Проверяем результат капчи
+            if (captchaWindow.IsCaptchaFailed)
+            {
+                // Блокируем пользователя
+                using (var db = new DataBaseEntities())
+                {
+                    var user = db.Polzovateli.FirstOrDefault(u => u.Login == login);
+                    if (user != null && user.Roli_Polzovateli != 1)
+                    {
+                        user.Blocked = true;
+                        user.Popitki_Vhoda = 3;
+                        db.SaveChanges();
+                        ErrorTextBlock.Text = "Вы заблокированы (3 ошибки капчи). Обратитесь к администратору";
+                        return;
+                    }
+                }
+                ErrorTextBlock.Text = "Слишком много ошибок капчи";
+                return;
+            }
+
+            if (!captchaWindow.IsCaptchaPassed)
+            {
+                ErrorTextBlock.Text = "Необходимо пройти капчу";
+                return;
+            }
+
+            // Капча пройдена — продолжаем авторизацию
             using (var db = new DataBaseEntities())
             {
                 var user = db.Polzovateli.FirstOrDefault(u => u.Login == login);
@@ -57,11 +87,10 @@ namespace DemExam.Pages
                     return;
                 }
 
-                // Проверка пароля
                 if (user.Password == password)
                 {
-                    // ✅ Сбрасываем попытки ТОЛЬКО если пользователь НЕ администратор
-                    if (user.Roli_Polzovateli != 1) // 1 = Администратор
+                    // Успешный вход
+                    if (user.Roli_Polzovateli != 1)
                     {
                         user.Popitki_Vhoda = 0;
                     }
@@ -70,7 +99,6 @@ namespace DemExam.Pages
                     MessageBox.Show("Вы успешно авторизовались", "Успех",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    // Переход в зависимости от роли
                     if (user.Roli_Polzovateli == 1)
                         NavigationService.Navigate(new AdminPanel());
                     else
@@ -78,7 +106,7 @@ namespace DemExam.Pages
                 }
                 else
                 {
-                    // ✅ Администратора не блокируем даже при ошибке
+                    // Неверный пароль
                     if (user.Roli_Polzovateli != 1)
                     {
                         _localAttemptCount++;
@@ -89,7 +117,7 @@ namespace DemExam.Pages
                         {
                             user.Blocked = true;
                             db.SaveChanges();
-                            ErrorTextBlock.Text = "Вы заблокированы. Обратитесь к администратору";
+                            ErrorTextBlock.Text = "Вы заблокированы (3 ошибки пароля). Обратитесь к администратору";
                             return;
                         }
                     }
@@ -99,7 +127,7 @@ namespace DemExam.Pages
                         ? "Неверный пароль администратора"
                         : $"Неверный логин или пароль. Осталось попыток: {3 - user.Popitki_Vhoda}";
                 }
-            } 
+            }
         }
     }
 }

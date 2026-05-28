@@ -1,0 +1,84 @@
+﻿<Window x:Class="DemExam.Capcha"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DemExam"
+        mc:Ignorable="d"
+        Title="Капча" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False" Height="400" Width="400" MinHeight="350" MinWidth="400" MaxHeight="400" MaxWidth="400">
+    <Grid Background="#FF2C3E50">
+        <StackPanel Margin="20" VerticalAlignment="Center">
+
+            <TextBlock Text="ПОДТВЕРЖДЕНИЕ" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="White" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="Введите цифры с картинки" 
+                       Foreground="#FFBDC3C7" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,15"/>
+
+            <!-- Изображение капчи (цифры) -->
+            <Border Background="White" 
+                    CornerRadius="8" 
+                    Padding="15" 
+                    Margin="0,0,0,15">
+                <TextBlock x:Name="CaptchaTextBlock" 
+                           Text="1234" 
+                           FontSize="36" 
+                           FontWeight="Bold" 
+                           FontFamily="Consolas"
+                           Foreground="#FF2C3E50"
+                           HorizontalAlignment="Center"/>
+            </Border>
+
+            <!-- Поле ввода -->
+            <TextBox x:Name="CaptchaTextBox" 
+                     Height="40" 
+                     FontSize="18" 
+                     HorizontalContentAlignment="Center"
+                     Margin="0,0,0,10"
+                     TextChanged="CaptchaTextBox_TextChanged"/>
+
+            <!-- Кнопки -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="RefreshButton" 
+                        Content="🔄 Обновить" 
+                        Width="100" 
+                        Height="35"
+                        Margin="5"
+                        Background="#FFE67E22" 
+                        Foreground="White"
+                        Click="RefreshButton_Click"/>
+
+                <Button x:Name="SubmitButton" 
+                        Content="✓ Подтвердить" 
+                        Width="100" 
+                        Height="35"
+                        Margin="5"
+                        Background="#FF27AE60" 
+                        Foreground="White"
+                        IsEnabled="False"
+                        Click="SubmitButton_Click"/>
+            </StackPanel>
+
+            <!-- Ошибка -->
+            <TextBlock x:Name="ErrorTextBlock" 
+                       Foreground="#FFE74C3C" 
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"
+                       FontSize="12"/>
+
+            <TextBlock x:Name="AttemptsTextBlock" 
+                       Foreground="#FFBDC3C7" 
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"
+                       FontSize="11"/>
+        </StackPanel>
+    </Grid>
+</Window>
